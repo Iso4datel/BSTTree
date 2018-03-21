@@ -1,35 +1,26 @@
+// Copyright Iso3datel
 #pragma once
 #include <vector>
 
 namespace BSTTree {
 
-	typedef int Data;
-	typedef unsigned int u_int;
+    typedef int Data;
+    typedef unsigned int u_int;
 
+struct Node {
+    Data data;      // value of data
+    Node* left;     // ptr to left node
+    Node* right;    // ptr to right node
 
-	// Структура ноды 
-	struct Node {
-		Data data;		// Текущее значение узла
-		Node* left;		// Указатель на левый узел
-		Node* right;	// Указатель на правый узел
+    explicit Node(Data data, Node* left = nullptr, Node* right = nullptr);
+    ~Node();
+};
 
-
-		Node(const Data data, Node* left = nullptr, Node* right = nullptr);
-		~Node();
-	};
-
-	// Класс дерева
-	class Tree {
-		Node* root = nullptr;
-
-	public:
-
-		// Вставка элемента 
-		bool insert(Data value);
-
-		// Конструктор и деструктор
-		Tree(const std::vector<Data> & arr);
-		~Tree();
-	};
-
-}
+class Tree {
+    Node* root = nullptr;
+ public:
+    bool insert(const Data value);
+    explicit Tree(const std::vector<Data> & arr);
+    ~Tree();
+};
+}   // namespace BSTTree
