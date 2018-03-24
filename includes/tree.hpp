@@ -2,7 +2,7 @@
 #pragma once
 #include <vector>
 
-namespace BSTTree {
+namespace BSTree {
 
     typedef int Data;
     typedef unsigned int u_int;
