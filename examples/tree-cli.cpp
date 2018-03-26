@@ -18,6 +18,9 @@ int main(int argc, char* argv[]) {
     std::cout << "Select one of the operations:" << std::endl;
     std::cout << "1. Show tree" << std::endl;
     std::cout << "2. Show list of nodes" << std::endl;
+    std::cout << "  a. pre-order" << std::endl;
+    std::cout << "  b. in-order" << std::endl;
+    std::cout << "  c. post-order" << std::endl;
     std::cout << "3. Add node to tree" << std::endl;
     std::cout << "4. Remove node from tree" << std::endl;
     std::cout << "5. Save tree to file" << std::endl;
@@ -39,9 +42,24 @@ int main(int argc, char* argv[]) {
         }
 
         switch (res) {
-        case 1:
-            //std::cout << "Вывод дерева на экран" << std::endl;
+        case 2:
+        {
+            std::cout << "> ";
+            char var;
+            std::cin >> var;
+            // switch
+            if (var == 'a')
+                tree.print(BSTree::traversal_order::pre);
+            else if (var == 'b')
+                tree.print(BSTree::traversal_order::in);
+            else if (var == 'c')
+                tree.print(BSTree::traversal_order::post);
+            else
+                std::cout << "Don't undertand traversal order!";
+
+            std::cout << std::endl;
             break;
+        }
         case 3:
             std::cout << "Enter value of node: " << std::endl;
             BSTree::Data temp;

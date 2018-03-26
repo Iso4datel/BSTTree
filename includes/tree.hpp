@@ -1,11 +1,22 @@
 // Copyright Iso3datel
 #pragma once
 #include <vector>
+#include <iostream>
+#include <functional>
 
 namespace BSTree {
 
-    typedef int Data;
-    typedef unsigned int u_int;
+    struct Node;                    // forward declaration
+    typedef int Data;               // node data
+    typedef unsigned int u_int;     // reduction
+    typedef std::function<void(const Node*)> Handle;    // node handle
+
+    // numerate bypass
+    enum traversal_order {
+        pre,
+        in,
+        post
+    };
 
 struct Node {
     Data data;      // value of data
@@ -18,9 +29,16 @@ struct Node {
 
 class Tree {
     Node* root = nullptr;
+
+    // universal tree traversal
+    void traversal(const Handle before = nullptr, const Handle middle = nullptr,
+        const Handle after = nullptr, const Node* cur_node = nullptr);
  public:
     bool insert(const Data value);
     explicit Tree(const std::vector<Data> & arr);
     ~Tree();
+
+    void print(const traversal_order order);
 };
-}   // namespace BSTTree
+
+}   // namespace BSTree

@@ -53,6 +53,56 @@ BSTree::Tree::Tree(const std::vector<Data> & arr) {
         insert(a);
 }
 
+void BSTree::Tree::traversal(const Handle before, const Handle middle,
+    const Handle after, const Node* cur_node) {
+    // if cur_node no select - choose root
+    if (!cur_node) {
+        // if root not exist - exit, else cur_node is root
+        if (root)
+            cur_node = root;
+        else
+            return;
+    }
+
+    // before go down
+    if (before)
+        before(cur_node);
+
+    // left node
+    if (cur_node->left)
+        traversal(before, middle, after, cur_node->left);
+
+    // middle left and right
+    if (middle)
+        middle(cur_node);
+
+    // right node
+    if (cur_node->right)
+        traversal(before, middle, after, cur_node->right);
+
+    // after go down
+    if (after)
+        after(cur_node);
+}
+
+void BSTree::Tree::print(const traversal_order order) {
+    // node's output
+    BSTree::Handle handle = [](const BSTree::Node* node) {
+        std::cout << node->data << " ";
+    };
+
+    // traversal order
+    switch (order) {
+    case pre:
+        traversal(handle);
+        break;
+    case in:
+        traversal(nullptr, handle);
+        break;
+    default:
+        traversal(nullptr, nullptr, handle);
+    }
+}
 
 BSTree::Tree::~Tree() {
 }
