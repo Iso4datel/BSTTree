@@ -30,6 +30,8 @@ bool BSTree::Tree::insert(Data value) {
     if (!root) {
         root = node;
     } else {
+
+        
         Node* cur_ptr = root;
 
         while (true) {
