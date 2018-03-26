@@ -42,8 +42,17 @@ int main(int argc, char* argv[]) {
         }
 
         switch (res) {
+        case 1:
+        {
+            tree.show();
+            break;
+        }
         case 2:
         {
+            if (tree.isEmprty()) {
+                std::cout << "Tree is empty!" << std::endl;
+                break;
+            }
             std::cout << "> ";
             char var;
             std::cin >> var;

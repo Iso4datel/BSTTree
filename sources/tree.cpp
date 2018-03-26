@@ -104,5 +104,37 @@ void BSTree::Tree::print(const traversal_order order) {
     }
 }
 
+bool BSTree::Tree::isEmprty() {
+    return (bool)!root;
+}
+
+void BSTree::Tree::show() {
+    if (isEmprty()) {
+        std::cout << "Tree is empty!" << std::endl;
+        return;
+    }
+
+    unsigned int off = 0;
+    std::vector<std::string> res;
+    BSTree::Handle handle_before = [&res, &off](const BSTree::Node* node) {
+        off++;
+    };
+
+    BSTree::Handle handle_middle = [&res, &off](const BSTree::Node* node) {
+        res.push_back(std::string((off - 1) * 2, '  ') + "--" + std::to_string(node->data));
+    };
+
+    BSTree::Handle handle_after = [&res, &off](const BSTree::Node* node) {
+        off--;
+    };
+
+    // calculation
+    traversal(handle_before, handle_middle, handle_after);
+
+    // return to right-left order
+    for (int i = res.size() - 1; i >= 0; i--)
+        std::cout << res[i] << std::endl;
+}
+
 BSTree::Tree::~Tree() {
 }

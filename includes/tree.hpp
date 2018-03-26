@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <functional>
+#include <string>
 
 namespace BSTree {
 
@@ -38,6 +39,8 @@ class Tree {
     explicit Tree(const std::vector<Data> & arr);
     ~Tree();
 
+    bool isEmprty();
+    void show();
     void print(const traversal_order order);
 };
 
