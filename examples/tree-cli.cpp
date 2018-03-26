@@ -29,6 +29,7 @@ int main(int argc, char* argv[]) {
     std::cout << "8. Exit" << std::endl;
 
     while (true) {
+        bool exit = false;
         int res;
         std::cout << "> ";
         std::cin >> res;
@@ -79,11 +80,26 @@ int main(int argc, char* argv[]) {
             else
                 std::cout << "Error node addition!" << std::endl;
             break;
+        case 8: 
+        {
+            std::cout << "Are you sure you want to quit? (y/n)" << std::endl;
+            char t;
+            std::cin >> t;
+            if (t == 'y')
+                exit = true;
+
+            break;
+        }
         default:
             std::cout << "Unknown command! " << res << std::endl;
             break;
         }
+
+        // exit 
+        if (exit)
+            break;
     }
+
 
     return 0;
 }

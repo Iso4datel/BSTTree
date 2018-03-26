@@ -20,9 +20,9 @@ namespace BSTree {
     };
 
 struct Node {
-    Data data;      // value of data
-    Node* left;     // ptr to left node
-    Node* right;    // ptr to right node
+    Data data;                // value of data
+    Node* left = nullptr;     // ptr to left node
+    Node* right = nullptr;    // ptr to right node
 
     explicit Node(Data data, Node* left = nullptr, Node* right = nullptr);
     ~Node();

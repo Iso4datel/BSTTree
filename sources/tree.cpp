@@ -6,8 +6,21 @@ BSTree::Node::Node(const Data data, Node* left, Node* right)
 }
 
 BSTree::Node::~Node() {
-    delete left;
-    delete right;
+    
+}
+
+BSTree::Tree::Tree(const std::vector<Data> & arr) {
+    for (const auto& a : arr)
+        insert(a);
+}
+
+BSTree::Tree::~Tree() {
+
+    BSTree::Handle handle = [](const Node* node) {
+        delete node;    // insert - new, destructor - delete
+    };
+
+    traversal(nullptr, nullptr, handle);
 }
 
 bool BSTree::Tree::insert(Data value) {
@@ -48,10 +61,6 @@ bool BSTree::Tree::insert(Data value) {
     return true;
 }
 
-BSTree::Tree::Tree(const std::vector<Data> & arr) {
-    for (const auto& a : arr)
-        insert(a);
-}
 
 void BSTree::Tree::traversal(const Handle before, const Handle middle,
     const Handle after, const Node* cur_node) {
@@ -136,5 +145,3 @@ void BSTree::Tree::show() {
         std::cout << res[i] << std::endl;
 }
 
-BSTree::Tree::~Tree() {
-}
