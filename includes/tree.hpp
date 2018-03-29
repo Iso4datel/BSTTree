@@ -9,8 +9,8 @@ namespace BSTree {
 
     struct Node;                    // forward declaration
     typedef int Data;               // node data
-    typedef unsigned int u_int;     // reduction
-    typedef std::function<void(const Node*)> Handle;    // node handle
+    typedef unsigned int u_int; 
+    typedef std::function<bool(Node*)> Handle;    // node handle 
 
     // numerate bypass
     enum traversal_order {
@@ -31,17 +31,33 @@ struct Node {
 class Tree {
     Node* root = nullptr;
 
-    // universal tree traversal
-    void traversal(const Handle before = nullptr, const Handle middle = nullptr,
-        const Handle after = nullptr, const Node* cur_node = nullptr);
+    // universal tree traversal (if return true - recursion end)
+    bool traversal(const Handle before = nullptr, const Handle middle = nullptr,
+        const Handle after = nullptr, Node* cur_node = nullptr);
  public:
-    bool insert(const Data value);
+    explicit Tree();
+    explicit Tree(std::initializer_list<Data>& list);
+    explicit Tree(const Tree& tree);
+    explicit Tree(Tree&& tree);
     explicit Tree(const std::vector<Data> & arr);
-    ~Tree();
+
+    bool insert(const Data value);
+    bool exists(const Data value);
+    bool remove(const Data value);
+
+    bool save(const std::string& path);
+    bool load(const std::string& path);
+
+    void show();                                // show tree
+    void print(const traversal_order order);    // traversal
 
     bool isEmprty();
-    void show();
-    void print(const traversal_order order);
+    
+    auto friend operator<<(std::ostream& stream, const Tree&)->std::ostream&;
+    auto operator=(const Tree&)->Tree&;
+    auto operator=(Tree&&)->Tree&;
+ 
+    ~Tree();
 };
 
 }   // namespace BSTree

@@ -1,6 +1,33 @@
 // Copyright Iso3datel
 #include <tree.hpp>
 
+BSTree::Tree::Tree() {
+    root = nullptr;
+}
+
+BSTree::Tree::Tree(std::initializer_list<Data>& list) {
+    for (const auto& l : list)
+        insert(l);
+}
+
+BSTree::Tree::Tree(Tree&& tree) : root(std::move(tree.root)) {
+    
+}
+
+BSTree::Tree::Tree(const Tree& tree) {
+    
+    if (tree.root) {
+        BSTree::Handle handle = [this](Node* node) {
+            insert(node->data);
+            return false;
+        };
+        traversal(nullptr, nullptr, nullptr, tree.root);
+    }
+    else {
+        root = nullptr;
+    }
+}
+
 BSTree::Node::Node(const Data data, Node* left, Node* right)
     : data(data), left(left), right(right) {
 }
@@ -18,6 +45,7 @@ BSTree::Tree::~Tree() {
 
     BSTree::Handle handle = [](const Node* node) {
         delete node;    // insert - new, destructor - delete
+        return false;
     };
 
     traversal(nullptr, nullptr, handle);
@@ -30,8 +58,6 @@ bool BSTree::Tree::insert(Data value) {
     if (!root) {
         root = node;
     } else {
-
-        
         Node* cur_ptr = root;
 
         while (true) {
@@ -64,42 +90,50 @@ bool BSTree::Tree::insert(Data value) {
 }
 
 
-void BSTree::Tree::traversal(const Handle before, const Handle middle,
-    const Handle after, const Node* cur_node) {
+bool BSTree::Tree::traversal(const Handle before, const Handle middle,
+    const Handle after, Node* cur_node) {
     // if cur_node no select - choose root
     if (!cur_node) {
         // if root not exist - exit, else cur_node is root
         if (root)
             cur_node = root;
         else
-            return;
+            return true;
     }
 
     // before go down
     if (before)
-        before(cur_node);
+        if (before(cur_node))
+            return true;
 
     // left node
     if (cur_node->left)
-        traversal(before, middle, after, cur_node->left);
+        if (traversal(before, middle, after, cur_node->left))
+            return true;
 
-    // middle left and right
+    // middle of left and right
     if (middle)
-        middle(cur_node);
+        if (middle(cur_node))
+            return true;
 
     // right node
     if (cur_node->right)
-        traversal(before, middle, after, cur_node->right);
+        if (traversal(before, middle, after, cur_node->right))
+            return true;
 
     // after go down
     if (after)
-        after(cur_node);
+        if (after(cur_node))
+            return true;
+
+    return false;
 }
 
 void BSTree::Tree::print(const traversal_order order) {
     // node's output
-    BSTree::Handle handle = [](const BSTree::Node* node) {
+    BSTree::Handle handle = [](BSTree::Node* node) {
         std::cout << node->data << " ";
+        return false;
     };
 
     // traversal order
@@ -127,16 +161,19 @@ void BSTree::Tree::show() {
 
     unsigned int off = 0;
     std::vector<std::string> res;
-    BSTree::Handle handle_before = [&res, &off](const BSTree::Node* node) {
+    BSTree::Handle handle_before = [&off](BSTree::Node* node) {
         off++;
+        return false;
     };
 
-    BSTree::Handle handle_middle = [&res, &off](const BSTree::Node* node) {
+    BSTree::Handle handle_middle = [&res, &off](BSTree::Node* node) {
         res.push_back(std::string((off - 1) * 2, '  ') + "--" + std::to_string(node->data));
+        return false;
     };
 
-    BSTree::Handle handle_after = [&res, &off](const BSTree::Node* node) {
-        off--;
+    BSTree::Handle handle_after = [&off](BSTree::Node* node) {
+        off--; 
+        return false;
     };
 
     // calculation
@@ -147,3 +184,112 @@ void BSTree::Tree::show() {
         std::cout << res[i] << std::endl;
 }
 
+bool BSTree::Tree::exists(const Data value) {
+    
+    bool exist = false;
+    BSTree::Handle handleExist = [&exist, value](Node* node) {
+
+        if (value == node->data)
+            return (exist = true); // find and exit from recursion
+
+        return (exist = false); // not find, not exit
+
+    };
+
+    traversal(handleExist);
+    return exist;
+
+}
+
+bool BSTree::Tree::remove(const Data value) {
+
+    Node * last_node = nullptr;
+    bool remove = false;
+    Node** root_ptr = &root;
+    BSTree::Handle handleRemove = [&last_node, value, &remove, &root_ptr](Node* node) {
+
+        if (value == node->data) {
+
+            // 1) node without subnodes (root for subtree)
+            if (!node->left && !node->right) {
+
+                // if node is not root
+                if (last_node){
+
+                    if (last_node->left == node)
+                        last_node->left = nullptr;
+                    else
+                        last_node->right = nullptr;
+                }
+
+
+                delete node;
+
+                // if last element in all tree
+                if (node == *root_ptr)
+                    *root_ptr = nullptr; // can't change pointer into lambda
+
+            }
+            else {
+                // 2) node have two subtree
+                if (node->left && node->right) {
+                    Node* cur_node = node->right;
+
+                    // if right subtree have only one node
+                    if (!cur_node->left) {
+                        
+                        node->data = cur_node->data;
+                        node->right = cur_node->right;
+                        delete cur_node;
+
+                    }
+                    else {
+
+                        // down to left (-1)
+                        while (cur_node->left->left)
+                            cur_node = cur_node->left;
+
+                        node->data = cur_node->left->data;
+                        delete cur_node->left;
+                        cur_node->left = nullptr;
+                        
+                    }
+
+                }
+                else {
+
+                    // 3) tree have only one node
+                    if (node->left && !node->right || !node->left && node->right) {
+
+                        // if root
+                        if (!last_node) {
+
+                            // change on copy-constructor
+                            Node* tmp = (node->right) ? node->right : node->left;
+                            node->data = tmp->data;
+                            node->left = tmp->left;
+                            node->right = tmp->right;
+                            delete tmp;
+   
+                        }
+                        else {
+                            if (last_node->left == node)
+                                last_node->left = (node->left) ? node->left : node->right;
+                            else
+                                last_node->right = (node->right) ? node->right : node->left;
+                            delete node;
+                        }
+                    }
+                }
+            }
+            // remove all
+            return (remove = true);
+        
+        }
+        last_node = node;
+        return (remove = false);
+        
+    };
+    traversal(handleRemove, handleRemove, handleRemove);
+    return remove;
+}

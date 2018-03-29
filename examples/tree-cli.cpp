@@ -80,6 +80,40 @@ int main(int argc, char* argv[]) {
             else
                 std::cout << "Error node addition!" << std::endl;
             break;
+        case 4:
+        {
+            std::cout << "Enter value of node: " << std::endl;
+            BSTree::Data temp;
+            std::cin >> temp;
+
+            if (std::cin) {
+                if (tree.remove(temp))
+                    std::cout << "Node removed!" << std::endl;
+                else
+                    std::cout << "Node does not exist!" << std::endl;
+            }
+            else {
+                std::cout << "Wrong format!" << std::endl;
+            }
+            break;
+        }
+        case 7:
+        {
+            std::cout << "Enter value of node: " << std::endl;
+            BSTree::Data temp;
+            std::cin >> temp;
+
+            if (std::cin) {
+                if (tree.exists(temp))
+                    std::cout << "The tree has this node!" << std::endl;
+                else 
+                    std::cout << "The tree does not have this node!" << std::endl;
+            }
+            else {
+                std::cout << "Wrong format!" << std::endl;
+            }
+            break;
+        }
         case 8: 
         {
             std::cout << "Are you sure you want to quit? (y/n)" << std::endl;
@@ -103,3 +137,4 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
+
