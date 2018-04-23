@@ -97,6 +97,26 @@ int main(int argc, char* argv[]) {
             }
             break;
         }
+        case 5: 
+        {
+            std::string path;
+            std::cout << "Enter path: ";
+            std::cin >> path;
+
+            tree.save(path);
+
+            break;
+        }
+        case 6: 
+        {
+            std::string path;
+            std::cout << "Enter path: ";
+            std::cin >> path;
+
+            tree.load(path);
+
+            break;
+        }
         case 7:
         {
             std::cout << "Enter value of node: " << std::endl;

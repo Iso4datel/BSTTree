@@ -293,3 +293,115 @@ bool BSTree::Tree::remove(const Data value) {
     traversal(handleRemove, handleRemove, handleRemove);
     return remove;
 }
+
+bool BSTree::Tree::save(const std::string & path) {
+
+    std::ifstream exist(path);
+    if (exist) {
+        // file already exists
+        std::string answer;
+        while (true) {
+            std::cout << "File already exist, rewrite? (y/n)" << std::endl;
+            std::cin >> answer;
+            if (answer == "y") {
+                break;
+            }
+            else if (answer == "n") {
+                return false;
+            }
+            else {
+                std::cout << "Not valid value. Repeat." << std::endl;
+            }
+        }
+    }
+    exist.close();
+    
+    std::string res;
+    Handle FWrite = [&res](BSTree::Node * node) {
+        res += std::to_string(node->data) + " ";
+        return false;
+    };
+
+    // write
+    std::ofstream file(path);
+    traversal(FWrite);
+    file << res;
+    file.close();
+
+    return true;
+}
+
+bool BSTree::Tree::load(const std::string & path) {
+    
+    // clear tree
+    BSTree::Handle handle = [](const Node* node) {
+        delete node;    // insert - new, destructor - delete
+        return false;
+    };
+
+    traversal(nullptr, nullptr, handle);
+    root = nullptr;
+
+    // load tree from file
+    std::ifstream file(path);
+    if (file) {
+        
+        while (!file.eof()) {
+            Data data;
+            file >> data;
+            insert(data);
+        }
+
+    }
+    else {
+        std::cout << "File not exist!" << std::endl;
+        return false;
+    }
+    file.close();
+    return true;
+}
+
+BSTree::Tree& BSTree::Tree::operator=(const BSTree::Tree& tree) {
+    
+    if (this != &tree) {
+
+        // clear tree
+        BSTree::Handle handle = [](const Node* node) {
+            delete node;    // insert - new, destructor - delete
+            return false;
+        };
+
+        traversal(nullptr, nullptr, handle);
+        root = nullptr;
+
+        // new values
+        Handle handle1 = [&](const Node * node) {
+            this->insert(node->data);
+            return false;
+        };
+
+        traversal(handle1);
+    }
+    return *this;
+}
+
+BSTree::Tree& BSTree::Tree::operator=(BSTree::Tree&& tree) {
+    root = tree.root;
+    return *this;
+}
+
+// non-member friend function operator
+auto BSTree::operator<<(std::ostream& stream, BSTree::Tree& tree)->std::ostream& {
+
+    std::string res;
+    BSTree::Handle FWrite = [&res](BSTree::Node * node) {
+        res += std::to_string(node->data) + " ";
+        return false;
+    };
+
+    // private method 
+    tree.traversal(FWrite);
+
+    return stream << res;
+
+}

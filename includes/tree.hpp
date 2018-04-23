@@ -4,6 +4,7 @@
 #include <iostream>
 #include <functional>
 #include <string>
+#include <fstream>
 
 namespace BSTree {
 
@@ -53,11 +54,15 @@ class Tree {
 
     bool isEmprty();
     
-    auto friend operator<<(std::ostream& stream, const Tree&)->std::ostream&;
-    auto operator=(const Tree&)->Tree&;
+    // non-member function operator, have access to private members
+    auto friend operator<<(std::ostream& stream, Tree&)->std::ostream&;
+    auto operator=(const Tree&)->Tree&; // A = A
     auto operator=(Tree&&)->Tree&;
  
     ~Tree();
 };
+
+// non-member friend function operator
+auto operator<<(std::ostream&, Tree&)->std::ostream&;
 
 }   // namespace BSTree
