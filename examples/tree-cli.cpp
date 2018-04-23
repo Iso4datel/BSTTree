@@ -91,13 +91,12 @@ int main(int argc, char* argv[]) {
                     std::cout << "Node removed!" << std::endl;
                 else
                     std::cout << "Node does not exist!" << std::endl;
-            }
-            else {
+            } else {
                 std::cout << "Wrong format!" << std::endl;
             }
             break;
         }
-        case 5: 
+        case 5:
         {
             std::string path;
             std::cout << "Enter path: ";
@@ -107,7 +106,7 @@ int main(int argc, char* argv[]) {
 
             break;
         }
-        case 6: 
+        case 6:
         {
             std::string path;
             std::cout << "Enter path: ";
@@ -126,15 +125,15 @@ int main(int argc, char* argv[]) {
             if (std::cin) {
                 if (tree.exists(temp))
                     std::cout << "The tree has this node!" << std::endl;
-                else 
-                    std::cout << "The tree does not have this node!" << std::endl;
-            }
-            else {
+                else
+                    std::cout << "The tree does not have this node!"
+                                                     << std::endl;
+            } else {
                 std::cout << "Wrong format!" << std::endl;
             }
             break;
         }
-        case 8: 
+        case 8:
         {
             std::cout << "Are you sure you want to quit? (y/n)" << std::endl;
             char t;
@@ -148,8 +147,7 @@ int main(int argc, char* argv[]) {
             std::cout << "Unknown command! " << res << std::endl;
             break;
         }
-
-        // exit 
+        // exit
         if (exit)
             break;
     }

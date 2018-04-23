@@ -5,25 +5,22 @@ BSTree::Tree::Tree() {
     root = nullptr;
 }
 
-BSTree::Tree::Tree(std::initializer_list<Data>& list) {
+BSTree::Tree::Tree(const std::initializer_list<Data>& list) {
     for (const auto& l : list)
         insert(l);
 }
 
 BSTree::Tree::Tree(Tree&& tree) : root(std::move(tree.root)) {
-    
 }
 
 BSTree::Tree::Tree(const Tree& tree) {
-    
     if (tree.root) {
         BSTree::Handle handle = [this](Node* node) {
             insert(node->data);
             return false;
         };
         traversal(nullptr, nullptr, nullptr, tree.root);
-    }
-    else {
+    } else {
         root = nullptr;
     }
 }
@@ -33,7 +30,6 @@ BSTree::Node::Node(const Data data, Node* left, Node* right)
 }
 
 BSTree::Node::~Node() {
-    
 }
 
 BSTree::Tree::Tree(const std::vector<Data> & arr) {
@@ -42,7 +38,6 @@ BSTree::Tree::Tree(const std::vector<Data> & arr) {
 }
 
 BSTree::Tree::~Tree() {
-
     BSTree::Handle handle = [](const Node* node) {
         delete node;    // insert - new, destructor - delete
         return false;
@@ -150,7 +145,7 @@ void BSTree::Tree::print(const traversal_order order) {
 }
 
 bool BSTree::Tree::isEmprty() {
-    return (bool)!root;
+    return !root;
 }
 
 void BSTree::Tree::show() {
@@ -167,12 +162,13 @@ void BSTree::Tree::show() {
     };
 
     BSTree::Handle handle_middle = [&res, &off](BSTree::Node* node) {
-        res.push_back(std::string((off - 1) * 2, '  ') + "--" + std::to_string(node->data));
+        res.push_back(std::string((off - 1) * 2, '  ') + "--"
+            + std::to_string(node->data));
         return false;
     };
 
     BSTree::Handle handle_after = [&off](BSTree::Node* node) {
-        off--; 
+        off--;
         return false;
     };
 
@@ -185,37 +181,29 @@ void BSTree::Tree::show() {
 }
 
 bool BSTree::Tree::exists(const Data value) {
-    
     bool exist = false;
     BSTree::Handle handleExist = [&exist, value](Node* node) {
-
         if (value == node->data)
-            return (exist = true); // find and exit from recursion
+            return (exist = true);  // find and exit from recursion
 
-        return (exist = false); // not find, not exit
-
+        return (exist = false);  // not find, not exit
     };
 
     traversal(handleExist);
     return exist;
-
 }
 
 bool BSTree::Tree::remove(const Data value) {
-
     Node * last_node = nullptr;
     bool remove = false;
     Node** root_ptr = &root;
-    BSTree::Handle handleRemove = [&last_node, value, &remove, &root_ptr](Node* node) {
-
+    BSTree::Handle handleRemove = [&last_node, value, &remove, &root_ptr]
+                                    (Node* node) {
         if (value == node->data) {
-
             // 1) node without subnodes (root for subtree)
             if (!node->left && !node->right) {
-
                 // if node is not root
-                if (last_node){
-
+                if (last_node) {
                     if (last_node->left == node)
                         last_node->left = nullptr;
                     else
@@ -227,24 +215,18 @@ bool BSTree::Tree::remove(const Data value) {
 
                 // if last element in all tree
                 if (node == *root_ptr)
-                    *root_ptr = nullptr; // can't change pointer into lambda
-
-            }
-            else {
+                    *root_ptr = nullptr;  // can't change pointer into lambda
+            } else {
                 // 2) node have two subtree
                 if (node->left && node->right) {
                     Node* cur_node = node->right;
 
                     // if right subtree have only one node
                     if (!cur_node->left) {
-                        
                         node->data = cur_node->data;
                         node->right = cur_node->right;
                         delete cur_node;
-
-                    }
-                    else {
-
+                    } else {
                         // down to left (-1)
                         while (cur_node->left->left)
                             cur_node = cur_node->left;
@@ -252,31 +234,27 @@ bool BSTree::Tree::remove(const Data value) {
                         node->data = cur_node->left->data;
                         delete cur_node->left;
                         cur_node->left = nullptr;
-                        
                     }
-
-                }
-                else {
-
+                } else {
                     // 3) tree have only one node
-                    if (node->left && !node->right || !node->left && node->right) {
-
+                    if (node->left && !node->right ||
+                        !node->left && node->right) {
                         // if root
                         if (!last_node) {
-
                             // change on copy-constructor
-                            Node* tmp = (node->right) ? node->right : node->left;
+                            Node* tmp = (node->right) ? node->right
+                                : node->left;
                             node->data = tmp->data;
                             node->left = tmp->left;
                             node->right = tmp->right;
                             delete tmp;
-   
-                        }
-                        else {
+                        } else {
                             if (last_node->left == node)
-                                last_node->left = (node->left) ? node->left : node->right;
+                                last_node->left = (node->left) ? node->left
+                                : node->right;
                             else
-                                last_node->right = (node->right) ? node->right : node->left;
+                                last_node->right = (node->right) ? node->right
+                                : node->left;
                             delete node;
                         }
                     }
@@ -284,18 +262,15 @@ bool BSTree::Tree::remove(const Data value) {
             }
             // remove all
             return (remove = true);
-        
         }
         last_node = node;
         return (remove = false);
-        
     };
     traversal(handleRemove, handleRemove, handleRemove);
     return remove;
 }
 
 bool BSTree::Tree::save(const std::string & path) {
-
     std::ifstream exist(path);
     if (exist) {
         // file already exists
@@ -305,17 +280,14 @@ bool BSTree::Tree::save(const std::string & path) {
             std::cin >> answer;
             if (answer == "y") {
                 break;
-            }
-            else if (answer == "n") {
+            } else if (answer == "n") {
                 return false;
-            }
-            else {
+            } else {
                 std::cout << "Not valid value. Repeat." << std::endl;
             }
         }
     }
     exist.close();
-    
     std::string res;
     Handle FWrite = [&res](BSTree::Node * node) {
         res += std::to_string(node->data) + " ";
@@ -332,7 +304,6 @@ bool BSTree::Tree::save(const std::string & path) {
 }
 
 bool BSTree::Tree::load(const std::string & path) {
-    
     // clear tree
     BSTree::Handle handle = [](const Node* node) {
         delete node;    // insert - new, destructor - delete
@@ -345,15 +316,12 @@ bool BSTree::Tree::load(const std::string & path) {
     // load tree from file
     std::ifstream file(path);
     if (file) {
-        
         while (!file.eof()) {
             Data data;
             file >> data;
             insert(data);
         }
-
-    }
-    else {
+    } else {
         std::cout << "File not exist!" << std::endl;
         return false;
     }
@@ -362,9 +330,7 @@ bool BSTree::Tree::load(const std::string & path) {
 }
 
 BSTree::Tree& BSTree::Tree::operator=(const BSTree::Tree& tree) {
-    
     if (this != &tree) {
-
         // clear tree
         BSTree::Handle handle = [](const Node* node) {
             delete node;    // insert - new, destructor - delete
@@ -391,17 +357,14 @@ BSTree::Tree& BSTree::Tree::operator=(BSTree::Tree&& tree) {
 }
 
 // non-member friend function operator
-auto BSTree::operator<<(std::ostream& stream, BSTree::Tree& tree)->std::ostream& {
-
+auto BSTree::operator<<(std::ostream& stream, BSTree::Tree& tree)
+                                                ->std::ostream& {
     std::string res;
     BSTree::Handle FWrite = [&res](BSTree::Node * node) {
         res += std::to_string(node->data) + " ";
         return false;
     };
-
-    // private method 
+    // private method
     tree.traversal(FWrite);
-
     return stream << res;
-
 }
