@@ -1,7 +1,12 @@
-// Copyright Iso3datel
+//  BSTree
+//  tree.hpp
+//  Created by Zinchenko && Shmakov /bmstu/.
+//  Copyright © 2018 iso4datel && geminishkv. All rights reserved.
+//
 #pragma once
 #include <vector>
 #include <iostream>
+#include <fstream>
 #include <functional>
 #include <string>
 #include <fstream>
